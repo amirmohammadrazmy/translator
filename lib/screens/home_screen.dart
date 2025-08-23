@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/translation_provider.dart';
+import '../models/translation.dart';
 import '../providers/subscription_provider.dart';
 import '../utils/constants.dart';
 import '../utils/app_localizations.dart';
