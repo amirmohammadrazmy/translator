@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/app_provider.dart';
 import '../providers/translation_provider.dart';
 import '../providers/subscription_provider.dart';
 import '../utils/constants.dart';
 import '../utils/app_localizations.dart';
 import '../widgets/daily_quote_card.dart';
-import '../widgets/translation_card.dart';
 import '../widgets/subscription_status_card.dart';
 import 'history_screen.dart';
 import 'favorites_screen.dart';
