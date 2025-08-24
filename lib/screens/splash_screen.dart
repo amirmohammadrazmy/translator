@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
-import '../providers/app_provider.dart';
-import '../utils/constants.dart';
-import '../utils/app_localizations.dart';
-import 'home_screen.dart';
-import 'update_screen.dart';
+import 'package:persian_translator/providers/app_provider.dart';
+import 'package:persian_translator/screens/home_screen.dart';
+import 'package:persian_translator/screens/update_screen.dart';
+import 'package:persian_translator/utils/constants.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -15,193 +15,116 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
-  late AnimationController _logoController;
-  late AnimationController _textController;
-  late Animation<double> _logoAnimation;
-  late Animation<double> _textAnimation;
+  late AnimationController _animationController;
 
   @override
   void initState() {
     super.initState();
-    
-    _logoController = AnimationController(
-      duration: const Duration(milliseconds: 1500),
+    _animationController = AnimationController(
+      duration: const Duration(seconds: 3),
       vsync: this,
     );
     
-    _textController = AnimationController(
-      duration: const Duration(milliseconds: 1000),
-      vsync: this,
-    );
-    
-    _logoAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _logoController,
-      curve: Curves.elasticOut,
-    ));
-    
-    _textAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _textController,
-      curve: Curves.easeInOut,
-    ));
-    
-    _startAnimations();
+    _initializeApp();
   }
 
-  void _startAnimations() async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    _logoController.forward();
+  Future<void> _initializeApp() async {
+    // شروع انیمیشن
+    _animationController.forward();
     
-    await Future.delayed(const Duration(milliseconds: 800));
-    _textController.forward();
+    // انتظار برای اتمام انیمیشن
+    await Future.delayed(const Duration(seconds: 3));
     
-    await Future.delayed(const Duration(milliseconds: 1200));
-    _navigateToNextScreen();
+    if (mounted) {
+      _checkForUpdates();
+    }
   }
 
-  void _navigateToNextScreen() {
-    final appProvider = Provider.of<AppProvider>(context, listen: false);
-    
-    if (appProvider.updateRequired) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const UpdateScreen()),
-      );
-    } else {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
-      );
+  Future<void> _checkForUpdates() async {
+    try {
+      final appProvider = Provider.of<AppProvider>(context, listen: false);
+      final needsUpdate = await appProvider.checkForUpdates();
+      
+      if (mounted) {
+        if (needsUpdate) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const UpdateScreen()),
+          );
+        } else {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
+          );
+        }
+      }
+    } catch (e) {
+      // در صورت خطا، مستقیماً به صفحه اصلی بروید
+      if (mounted) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+        );
+      }
     }
   }
 
   @override
   void dispose() {
-    _logoController.dispose();
-    _textController.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context);
-    final isRTL = localizations.locale.languageCode == 'fa';
+    // دریافت اندازه صفحه
+    final screenSize = MediaQuery.of(context).size;
+    final isSmallScreen = screenSize.width < 400;
+    final isLargeScreen = screenSize.width > 600;
     
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: AppTheme.primaryGradient,
-          ),
-        ),
-        child: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Logo Animation
-              AnimatedBuilder(
-                animation: _logoAnimation,
-                builder: (context, child) {
-                  return Transform.scale(
-                    scale: _logoAnimation.value,
-                    child: Container(
-                      width: 120,
-                      height: 120,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(30),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            blurRadius: 20,
-                            offset: const Offset(0, 10),
-                          ),
-                        ],
-                      ),
-                      child: Icon(
-                        Icons.translate,
-                        size: 60,
-                        color: AppTheme.primaryColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: Center(
+        child: Container(
+          // محدود کردن اندازه انیمیشن برای گوشی‌های مختلف
+          width: isSmallScreen 
+              ? screenSize.width * 0.7  // گوشی‌های کوچک: 70% عرض صفحه
+              : isLargeScreen 
+                  ? 300  // تبلت/دسکتاپ: حداکثر 300px
+                  : screenSize.width * 0.6,  // گوشی‌های معمولی: 60% عرض صفحه
+          height: isSmallScreen 
+              ? screenSize.height * 0.4  // گوشی‌های کوچک: 40% ارتفاع صفحه
+              : isLargeScreen 
+                  ? 300  // تبلت/دسکتاپ: حداکثر 300px
+                  : screenSize.height * 0.5,  // گوشی‌های معمولی: 50% ارتفاع صفحه
+          child: Lottie.asset(
+            'assets/animations/splash_animation.json', // فایل Lottie شما
+            controller: _animationController,
+            onLoaded: (composition) {
+              _animationController.duration = composition.duration;
+            },
+            repeat: false,
+            fit: BoxFit.contain,
+            // اضافه کردن error handling
+            errorBuilder: (context, error, stackTrace) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.error_outline,
+                      size: 50,
+                      color: Colors.red[300],
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'خطا در بارگذاری انیمیشن',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.red[300],
                       ),
                     ),
-                  );
-                },
-              ),
-              
-              const SizedBox(height: 40),
-              
-              // App Name Animation
-              AnimatedBuilder(
-                animation: _textAnimation,
-                builder: (context, child) {
-                  return Transform.translate(
-                    offset: Offset(0, 20 * (1 - _textAnimation.value)),
-                    child: Opacity(
-                      opacity: _textAnimation.value,
-                      child: Text(
-                        localizations.appName,
-                        style: const TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          fontFamily: 'Vazir',
-                        ),
-                        textAlign: TextAlign.center,
-                        textDirection: isRTL ? TextDirection.rtl : TextDirection.ltr,
-                      ),
-                    ),
-                  );
-                },
-              ),
-              
-              const SizedBox(height: 20),
-              
-              // Subtitle
-              AnimatedBuilder(
-                animation: _textAnimation,
-                builder: (context, child) {
-                  return Transform.translate(
-                    offset: Offset(0, 20 * (1 - _textAnimation.value)),
-                    child: Opacity(
-                      opacity: _textAnimation.value,
-                      child: Text(
-                        'Smart Translation & TTS',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.white.withOpacity(0.9),
-                          fontFamily: 'Vazir',
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  );
-                },
-              ),
-              
-              const SizedBox(height: 60),
-              
-              // Loading indicator
-              const CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                strokeWidth: 3,
-              ),
-              
-              const SizedBox(height: 20),
-              
-              // Version text
-              Text(
-                'v${AppConstants.appVersion}',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.white.withOpacity(0.7),
+                  ],
                 ),
-              ),
-            ],
+              );
+            },
           ),
         ),
       ),
