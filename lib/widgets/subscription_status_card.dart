@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/subscription_provider.dart';
 import '../utils/constants.dart';
-import '../utils/app_localizations.dart';
 
 class SubscriptionStatusCard extends StatelessWidget {
   const SubscriptionStatusCard({Key? key}) : super(key: key);

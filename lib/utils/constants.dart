@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../screens/favorites_screen.dart';
+import '../screens/history_screen.dart';
+import '../screens/home_screen.dart';
+import '../screens/paywall_screen.dart';
+import '../screens/settings_screen.dart';
+import '../screens/update_screen.dart';
+
 class AppConstants {
   // App Info
   static const String appName = 'مترجم هوشمند';
@@ -43,7 +50,7 @@ class AppConstants {
 
 class AppTheme {
   // Persian-inspired color palette
-  static const Color primaryColor = Color(0xFF1E88E5);      // Blue
+  static const MaterialColor primaryColor = Colors.blue;    // Blue
   static const Color secondaryColor = Color(0xFFFF6B35);    // Orange
   static const Color accentColor = Color(0xFF4CAF50);       // Green
   static const Color warningColor = Color(0xFFFF9800);      // Amber
@@ -63,8 +70,8 @@ class AppTheme {
   
   // Gradient Colors
   static const List<Color> primaryGradient = [
-    Color(0xFF1E88E5),
-    Color(0xFF42A5F5),
+    Colors.blue,
+    Colors.lightBlueAccent,
   ];
   
   static const List<Color> secondaryGradient = [
@@ -82,11 +89,9 @@ class AppTheme {
         primary: primaryColor,
         secondary: secondaryColor,
         surface: lightSurface,
-        background: lightBackground,
         onPrimary: Colors.white,
         onSecondary: Colors.white,
         onSurface: lightText,
-        onBackground: lightText,
       ),
       scaffoldBackgroundColor: lightBackground,
       appBarTheme: const AppBarTheme(
@@ -134,11 +139,9 @@ class AppTheme {
         primary: primaryColor,
         secondary: secondaryColor,
         surface: darkSurface,
-        background: darkBackground,
         onPrimary: Colors.white,
         onSecondary: Colors.white,
         onSurface: darkText,
-        onBackground: darkText,
       ),
       scaffoldBackgroundColor: darkBackground,
       appBarTheme: const AppBarTheme(

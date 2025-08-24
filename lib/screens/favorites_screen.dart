@@ -63,7 +63,7 @@ class FavoritesScreen extends StatelessWidget {
               itemCount: favorites.length,
               itemBuilder: (context, index) {
                 final translation = favorites[index];
-                return _buildFavoriteItem(translation, translationProvider);
+                return _buildFavoriteItem(context, translation, translationProvider);
               },
             );
           },
@@ -72,7 +72,7 @@ class FavoritesScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFavoriteItem(Translation translation, TranslationProvider translationProvider) {
+  Widget _buildFavoriteItem(BuildContext context, Translation translation, TranslationProvider translationProvider) {
     final isRTL = translation.sourceLanguage == 'fa' || translation.targetLanguage == 'fa';
     
     return Card(

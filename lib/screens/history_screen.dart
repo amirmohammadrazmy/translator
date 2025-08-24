@@ -129,7 +129,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     itemCount: history.length,
                     itemBuilder: (context, index) {
                       final translation = history[index];
-                      return _buildHistoryItem(translation, translationProvider);
+                      return _buildHistoryItem(context, translation, translationProvider);
                     },
                   );
                 },
@@ -141,7 +141,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
     );
   }
 
-  Widget _buildHistoryItem(Translation translation, TranslationProvider translationProvider) {
+  Widget _buildHistoryItem(BuildContext context, Translation translation, TranslationProvider translationProvider) {
+    final localizations = AppLocalizations.of(context);
     final isRTL = translation.sourceLanguage == 'fa' || translation.targetLanguage == 'fa';
     
     return Card(

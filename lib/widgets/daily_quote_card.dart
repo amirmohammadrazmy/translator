@@ -95,7 +95,7 @@ class _DailyQuoteCardState extends State<DailyQuoteCard> {
             Row(
               children: [
                 Icon(
-                  Icons.quote,
+                  Icons.format_quote,
                   color: Colors.white.withOpacity(0.8),
                   size: 24,
                 ),
