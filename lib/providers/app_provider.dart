@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../utils/constants.dart';
+import 'dart:math' as math;
 
 class AppProvider extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.system;
@@ -89,6 +90,43 @@ class AppProvider extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  // بررسی نیاز به به‌روزرسانی
+  Future<bool> checkForUpdates() async {
+    try {
+      final response = await http.get(Uri.parse(AppConstants.versionCheckUrl));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final latestVersion = data['version'];
+        final currentVersion = AppConstants.appVersion;
+        
+        // مقایسه نسخه‌ها
+        if (_compareVersions(latestVersion, currentVersion) > 0) {
+          _updateRequired = true;
+          _latestVersion = latestVersion;
+          _updateUrl = data['download_url'];
+          notifyListeners();
+          return true;
+        }
+      }
+    } catch (e) {
+      debugPrint('خطا در بررسی به‌روزرسانی: $e');
+    }
+    return false;
+  }
+
+  // مقایسه نسخه‌ها
+  int _compareVersions(String v1, String v2) {
+    final parts1 = v1.split('.').map(int.parse).toList();
+    final parts2 = v2.split('.').map(int.parse).toList();
+    
+    for (int i = 0; i < math.min(parts1.length, parts2.length); i++) {
+      if (parts1[i] != parts2[i]) {
+        return parts1[i].compareTo(parts2[i]);
+      }
+    }
+    return parts1.length.compareTo(parts2.length);
   }
 
   // Set theme mode

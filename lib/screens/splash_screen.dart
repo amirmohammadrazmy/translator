@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:persian_translator/providers/app_provider.dart';
 import 'package:persian_translator/screens/home_screen.dart';
 import 'package:persian_translator/screens/update_screen.dart';
-import 'package:persian_translator/utils/constants.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
