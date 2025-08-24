@@ -41,10 +41,6 @@
             android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait">
             
-            <!-- Specifies an Android theme to apply to this Activity as soon as
-                 the Android process has started. This theme is visible to the user
-                 while the Flutter UI is initializing. After that, this theme
-                 continues to determine the Window background behind the Flutter UI. -->
             <meta-data
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
@@ -54,20 +50,9 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-            
-            <!-- Deep link for Bazaar app -->
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" 
-                      android:host="cafebazaar.ir" 
-                      android:pathPrefix="/app/ir.behtarinarts.dikshenery" />
-            </intent-filter>
         </activity>
         
-        <!-- Don't delete the meta-data below.
-             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
+        <!-- Flutter embedding v2 -->
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
@@ -77,14 +62,5 @@
             android:name="com.tts.flutter_tts.FlutterTTSService"
             android:exported="false"
             android:foregroundServiceType="mediaPlayback" />
-            
-        <!-- Bazaar In-App Billing Service -->
-        <service
-            android:name="ir.cafebazaar.pardakht.InAppBillingService"
-            android:exported="false" />
-            
-        <meta-data
-            android:name="ir.cafebazaar.pardakht.PAYMENT_SERVICE"
-            android:value="ir.cafebazaar.pardakht.InAppBillingService" />
     </application>
 </manifest> 

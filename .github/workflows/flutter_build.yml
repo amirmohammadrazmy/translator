@@ -32,7 +32,7 @@ jobs:
         java-version: '17'
         
     - name: Setup Flutter
-      uses: subosito/flutter-action@v2
+      uses: subosito/flutter-action@v4
       with:
         flutter-version: '3.24.5'
         channel: 'stable'
@@ -71,14 +71,12 @@ jobs:
       run: |
         flutter build apk --debug --target-platform android-arm64
         flutter build apk --debug --target-platform android-arm
-        flutter build apk --debug --target-platform android-x64
         
     - name: Build APK Release
       if: github.event.inputs.build_type == 'release'
       run: |
         flutter build apk --release --target-platform android-arm64
         flutter build apk --release --target-platform android-arm
-        flutter build apk --release --target-platform android-x64
         
     - name: Build App Bundle
       if: github.event.inputs.build_type == 'bundle'
@@ -92,7 +90,6 @@ jobs:
         path: |
           build/app/outputs/flutter-apk/app-arm64-debug.apk
           build/app/outputs/flutter-apk/app-arm-debug.apk
-          build/app/outputs/flutter-apk/app-x64-debug.apk
         retention-days: 30
         
     - name: Upload Release APKs
@@ -103,7 +100,6 @@ jobs:
         path: |
           build/app/outputs/flutter-apk/app-arm64-release.apk
           build/app/outputs/flutter-apk/app-arm-release.apk
-          build/app/outputs/flutter-apk/app-x64-release.apk
         retention-days: 30
         
     - name: Upload App Bundle
@@ -115,26 +111,20 @@ jobs:
         retention-days: 30
         
     - name: Create Release
-      if: github.event.inputs.build_type == 'release' && github.ref == 'refs/heads/main'
-      uses: softprops/action-gh-release@v2
+      if: github.event.inputs.build_type == 'release'
+      uses: softprops/action-gh-release@v1
       with:
         files: |
           build/app/outputs/flutter-apk/app-arm64-release.apk
           build/app/outputs/flutter-apk/app-arm-release.apk
-          build/app/outputs/flutter-apk/app-x64-release.apk
-        tag_name: v${{ github.run_number }}
-        name: Release v${{ github.run_number }}
+        tag_name: v${{ github.event.inputs.version || '1.0.0' }}
+        name: Release v${{ github.event.inputs.version || '1.0.0' }}
         body: |
-          🚀 Flutter App Build v${{ github.run_number }}
+          Flutter APK Release
           
-          ## 📱 APK Files
-          - **ARM64**: app-arm64-release.apk
-          - **ARM**: app-arm-release.apk  
-          - **x64**: app-x64-release.apk
+          - ARM64 APK for modern devices
+          - ARM APK for older devices
           
-          ## 🔧 Build Info
-          - Flutter Version: 3.24.5
-          - Build Date: ${{ github.event.head_commit.timestamp }}
-          - Commit: ${{ github.sha }}
+          Download and install on your Android device.
         draft: false
         prerelease: false 
