@@ -26,7 +26,7 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    namespace "com.example.persian_translator"
+    namespace "ir.behtarinarts.dikshenery"
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
@@ -69,11 +69,6 @@ android {
             applicationIdSuffix ".debug"
             debuggable true
         }
-    }
-    
-    // Enable RTL support
-    defaultConfig {
-        vectorDrawables.useSupportLibrary = true
     }
     
     // Bundle configuration
